@@ -15,8 +15,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATES_DIRS = os.path.join(BASE_DIR, 'templates')
-STATICS_DIRS = os.path.join(BASE_DIR, 'statics')
+# Las variables TEMPLATES_DIRS y STATICS_DIRS no son necesarias si se definen 
+# correctamente en las secciones TEMPLATES y STATICFILES_DIRS.
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,7 +28,8 @@ SECRET_KEY = 'django-insecure-wn=_-c*+9ezsz8vk@$#iywdq%6$j))b817%7%f0kb&pkma==w1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# CORRECCIÓN CODESPACES: Permite que el servidor se ejecute en la URL de GitHub
+ALLOWED_HOSTS = ['*'] 
 
 
 # Application definition
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tienda',  
+    'tienda'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,8 @@ ROOT_URLCONF = 'tienda_personalizados.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIRS],
+        # CORRECCIÓN CRÍTICA: La ruta al directorio principal de templates
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,3 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# AJUSTE CODESPACES: Soluciona posibles errores de CSRF al enviar formularios
+CSRF_TRUSTED_ORIGINS = ['https://*.github.dev', 'https://*.githubapp.com','http://localhost:8000','http://127.0.0.1:8000','https://localhost:8000','https://127.0.0.1:8000']

@@ -1,0 +1,73 @@
+{% extends "tienda/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">Seguimiento de tu Pedido</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h4>Progreso Actual</h4>
+            <div class="mb-4">
+                <label class="form-label">Estado: <strong>{{ pedido.get_estado_pedido_display }}</strong></label>
+                <div class="progress" style="height: 25px;">
+                    {% if pedido.estado_pedido == 'solicitado' %}
+                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 15%">15%</div>
+                    {% elif pedido.estado_pedido == 'aprobado' %}
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 30%">30%</div>
+                    {% elif pedido.estado_pedido == 'en_proceso' %}
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 60%">60%</div>
+                    {% elif pedido.estado_pedido == 'realizado' %}
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 85%">85%</div>
+                    {% elif pedido.estado_pedido == 'entregado' or pedido.estado_pedido == 'finalizado' %}
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%">100% (Entregado)</div>
+                    {% elif pedido.estado_pedido == 'cancelado' %}
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 100%">CANCELADO</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr>
+
+            <h4>Información del Pedido</h4>
+            <p><strong>ID del Pedido:</strong> {{ pedido.id }}</p>
+            <p><strong>Cliente:</strong> {{ pedido.nombre_cliente }}</p>
+            <p><strong>Email:</strong> {{ pedido.email }}</p>
+            <p><strong>Estado del Pago:</strong> {{ pedido.get_estado_pago_display }}</p>
+            <p><strong>Plataforma de solicitud:</strong> {{ pedido.get_plataforma_display }}</p>
+            <p><strong>Fecha de creación:</strong> {{ pedido.fecha_creacion }}</p>
+
+            <hr>
+
+            <h4>Descripción del Diseño</h4>
+            <p>{{ pedido.descripcion_diseno }}</p>
+
+            <hr>
+
+            <h4>Imágenes de Referencia</h4>
+            {% if imagenes_referencia %}
+                <div class="row">
+                    {% for img in imagenes_referencia %}
+                        <div class="col-md-4 mb-3">
+                            <img src="{{ img.imagen.url }}" class="img-fluid rounded shadow">
+                            <p class="text-center mt-2">{{ img.descripcion }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No se adjuntaron imágenes.</p>
+            {% endif %}
+
+            <hr>
+
+            <h4>Token de Seguimiento</h4>
+            <div class="alert alert-info">
+                {{ pedido.token_seguimiento }}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

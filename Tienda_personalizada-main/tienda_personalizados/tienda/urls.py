@@ -10,6 +10,6 @@ urlpatterns = [
     path('solicitar-pedido/', views.SolicitarPedidoView.as_view(), name='solicitar_pedido'),
     path('pedido-exitoso/', views.pedido_exitoso, name='pedido_exitoso'),
 
-    # URL correcta para seguimiento
+    # URL para el seguimiento por token único (Objetivo 6)
     path('seguimiento/<str:token>/', views.seguimiento_pedido, name='seguimiento_pedido'),
 ]

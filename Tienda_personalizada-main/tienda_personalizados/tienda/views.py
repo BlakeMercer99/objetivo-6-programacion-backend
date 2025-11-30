@@ -81,7 +81,7 @@ class SolicitarPedidoView(CreateView):
     model = Pedido
     form_class = SolicitudPedidoForm
     template_name = 'tienda/solicitar_pedido.html'
-    success_url = reverse_lazy('pedido_exitoso')
+    success_url = reverse_lazy('tienda:pedido_exitoso') # Asegurando namespace
     
     def get_initial(self):
         initial = super().get_initial()
@@ -96,7 +96,7 @@ class SolicitarPedidoView(CreateView):
     
     def form_valid(self, form):
         response = super().form_valid(form)
-        # Guardar el ID del pedido en la sesión para mostrarlo en la página de éxito
+        # Guardar el ID y el token del pedido en la sesión 
         self.request.session['ultimo_pedido_id'] = self.object.id
         self.request.session['token_seguimiento'] = str(self.object.token_seguimiento)
         return response
@@ -107,13 +107,18 @@ def pedido_exitoso(request):
     token_seguimiento = request.session.get('token_seguimiento')
     
     if not pedido_id or not token_seguimiento:
-        return redirect('index')
+        return redirect('tienda:index') # Asegurando namespace
     
     try:
         pedido = Pedido.objects.get(id=pedido_id)
+        
+        # CORRECCIÓN: Usamos la URL relativa para evitar que Codespaces use 'localhost:8000'
+        # El navegador agregará automáticamente el host de Codespaces.
+        url_relativa = pedido.get_absolute_url()
+        
         context = {
             'pedido': pedido,
-            'url_seguimiento': request.build_absolute_uri(pedido.get_absolute_url())
+            'url_seguimiento': url_relativa 
         }
         
         # Limpiar la sesión
@@ -124,7 +129,7 @@ def pedido_exitoso(request):
             
         return render(request, 'tienda/pedido_exitoso.html', context)
     except Pedido.DoesNotExist:
-        return redirect('index')
+        return redirect('tienda:index') # Asegurando namespace
 
 
 def seguimiento_pedido(request, token):

@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse # Agregada importación aquí para consistencia
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
@@ -95,7 +96,7 @@ class Pedido(models.Model):
     estado_pedido = models.CharField(max_length=20, choices=ESTADOS_PEDIDO, default='solicitado')
     estado_pago = models.CharField(max_length=20, choices=ESTADOS_PAGO, default='pendiente')
     
-    # Token de seguimiento (ahora con nombre más amigable)
+    # Token de seguimiento
     token_seguimiento = models.CharField(
         "Token de seguimiento",
         max_length=12,
@@ -121,12 +122,13 @@ class Pedido(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.token_seguimiento:
+            # Usar uuid para generar un token único de 12 caracteres (hex)
             self.token_seguimiento = uuid.uuid4().hex[:12]
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        from django.urls import reverse
-        return reverse('seguimiento_pedido', kwargs={'token': self.token_seguimiento})
+        # CORRECCIÓN: Usar 'tienda:seguimiento_pedido' para el namespace correcto
+        return reverse('tienda:seguimiento_pedido', kwargs={'token': self.token_seguimiento})
 
 
 class ImagenReferencia(models.Model):
